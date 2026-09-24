@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratham (@prathamdadaa) • Instagram Connect</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        ig: {
+                            purple: '#833AB4',
+                            red: '#FD1D1D',
+                            orange: '#F56040',
+                            yellow: '#FCCC63',
+                            pink: '#E1306C',
+                            dark: '#000000',
+                            cardDark: '#121212',
+                            borderDark: '#262626',
+                            lightBg: '#FAFAFA',
+                        }
+                    },
+                    backgroundImage: {
+                        'ig-gradient': 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                        'ig-gradient-radial': 'radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Instagram Story Ring Animation */
+        .story-ring {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            padding: 2.5px;
+            border-radius: 9999px;
+        }
+
+        .story-ring-active {
+            animation: rotateGradient 4s linear infinite;
+        }
+
+        @keyframes rotateGradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Floating Floating Heart Animation */
+        @keyframes floatUpAndFade {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.8) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-40px) scale(1.2) rotate(-10deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.6) rotate(10deg);
+            }
+        }
+
+        .floating-heart {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUpAndFade 0.8s ease-out forwards;
+            color: #ed4956;
+            z-index: 50;
+        }
+
+        .ig-card {
+            border-color: #dbdbdb;
+        }
+        .dark .ig-card {
+            border-color: #262626;
+        }
+
+        /* Hide scrollbars */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-ig-lightBg dark:bg-black text-slate-900 dark:text-slate-100 min-h-screen">
+
+    <!-- Top Instagram Navigation Bar -->
+    <nav class="sticky top-0 z-40 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-slate-200 dark:border-ig-borderDark px-4 py-2.5">
+        <div class="max-w-xl mx-auto flex justify-between items-center">
+            <!-- Instagram Logo / User Title -->
+            <div class="flex items-center gap-2">
+                <span class="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-ig-gradient">
+                    Instagram
+                </span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">
+                    Connect
+                </span>
+            </div>
+
+            <!-- Top Icons Action -->
+            <div class="flex items-center gap-4 text-xl">
+                <button id="themeToggleBtn" title="Toggle Theme" class="hover:opacity-70 transition-opacity">
+                    <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                </button>
+                <button id="topShareBtn" title="Share Profile" class="hover:opacity-70 transition-opacity">
+                    <i class="fa-regular fa-paper-plane text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-xl mx-auto px-4 py-6">
+
+        <!-- Profile Header Section (Instagram Layout) -->
+        <section class="mb-6">
+            <div class="flex items-center justify-between gap-4 sm:gap-6">
+                <!-- Profile Avatar with Instagram Story Ring -->
+                <div class="relative flex-shrink-0">
+                    <div class="story-ring story-ring-active cursor-pointer" id="storyAvatarBtn">
+                        <div class="p-0.5 bg-white dark:bg-black rounded-full">
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-zinc-900 flex items-center justify-center text-white text-2xl sm:text-3xl font-black border-2 border-transparent select-none overflow-hidden relative">
+                                <span class="bg-clip-text text-transparent bg-ig-gradient">PD</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Bar -->
+                <div class="flex-grow flex justify-around text-center">
+                    <div>
+                        <div id="statLinksCount" class="font-bold text-base sm:text-lg">8</div>
+                        <div class="text-xs text-slate-500 dark:text-zinc-400">Links</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-base sm:text-lg">100+</div>
+                        <div class="text-xs text-slate-500 dark:text-zinc-400">Articles</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-base sm:text-lg">5k+</div>
+                        <div class="text-xs text-slate-500 dark:text-zinc-400">Commits</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Info & Bio -->
+            <div class="mt-4 space-y-2">
+                <div class="flex items-center gap-1.5">
+                    <h1 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">Pratham Dadaa</h1>
+                    <i class="fa-solid fa-circle-check text-blue-500 text-sm" title="Verified Profile"></i>
+                    <span class="text-xs text-slate-500 dark:text-zinc-400 font-normal">@prathamdadaa</span>
+                </div>
+
+                <div class="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed">
+                    <p class="font-medium text-slate-900 dark:text-zinc-100">💻 Full-Stack Software Engineer & Tech Creator</p>
+                    <p>Writing code, sharing technical insights & competitive programming.</p>
+                    <p class="text-blue-600 dark:text-blue-400 font-medium">#Developer #Blogger #Tech #OpenSource</p>
+                    <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1 flex items-center gap-1">
+                        <i class="fa-solid fa-location-dot text-xs text-rose-500"></i> India &bull; Available for collaboration
+                    </p>
+                </div>
+            </div>
+
+            <!-- Instagram Style CTA Buttons -->
+            <div class="mt-4 grid grid-cols-3 gap-2">
+                <a href="https://linkedin.com/in/@prathamdadaa" target="_blank" class="py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs text-center transition-all shadow-sm">
+                    Connect
+                </a>
+                <button id="openShareModalBtn" class="py-1.5 rounded-lg bg-slate-200 dark:bg-zinc-800 hover:bg-slate-300 dark:hover:bg-zinc-700 text-slate-900 dark:text-white font-semibold text-xs text-center transition-all">
+                    Share Profile
+                </button>
+                <button onclick="copyToClipboard('https://instagram.com/prathamdadaa/', 'Instagram Profile')" class="py-1.5 rounded-lg bg-slate-200 dark:bg-zinc-800 hover:bg-slate-300 dark:hover:bg-zinc-700 text-slate-900 dark:text-white font-semibold text-xs text-center transition-all flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-link text-[10px]"></i> Copy
+                </button>
+            </div>
+        </section>
+
+        <!-- Story Highlights Carousel -->
+        <section class="mb-6 border-b border-slate-200 dark:border-ig-borderDark pb-5">
+            <div class="flex items-center gap-4 overflow-x-auto no-scrollbar py-1">
+                
+                <!-- Highlight 1: All -->
+                <button class="highlight-btn flex flex-col items-center gap-1.5 flex-shrink-0 group" data-category="all">
+                    <div class="p-0.5 rounded-full border-2 border-pink-500 group-hover:scale-105 transition-transform">
+                        <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xl text-pink-500">
+                            🌐
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-700 dark:text-zinc-300">All Links</span>
+                </button>
+
+                <!-- Highlight 2: Code & Tech -->
+                <button class="highlight-btn flex flex-col items-center gap-1.5 flex-shrink-0 group" data-category="tech">
+                    <div class="p-0.5 rounded-full border-2 border-transparent hover:border-slate-300 dark:hover:border-zinc-700 group-hover:scale-105 transition-transform">
+                        <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xl text-blue-500">
+                            💻
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-zinc-400">Tech & Code</span>
+                </button>
+
+                <!-- Highlight 3: Writing -->
+                <button class="highlight-btn flex flex-col items-center gap-1.5 flex-shrink-0 group" data-category="writing">
+                    <div class="p-0.5 rounded-full border-2 border-transparent hover:border-slate-300 dark:hover:border-zinc-700 group-hover:scale-105 transition-transform">
+                        <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xl text-amber-500">
+                            📝
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-zinc-400">Articles</span>
+                </button>
+
+                <!-- Highlight 4: Social -->
+                <button class="highlight-btn flex flex-col items-center gap-1.5 flex-shrink-0 group" data-category="social">
+                    <div class="p-0.5 rounded-full border-2 border-transparent hover:border-slate-300 dark:hover:border-zinc-700 group-hover:scale-105 transition-transform">
+                        <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xl text-emerald-500">
+                            🚀
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-zinc-400">Social</span>
+                </button>
+
+            </div>
+        </section>
+
+        <!-- Feed / Grid View Switcher & Search Bar -->
+        <div class="flex items-center justify-between gap-3 mb-5">
+            <!-- Feed/Grid Icons Toggle -->
+            <div class="flex items-center border border-slate-200 dark:border-ig-borderDark rounded-lg p-0.5 bg-slate-100 dark:bg-zinc-900">
+                <button id="viewGridBtn" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm flex items-center gap-1 transition-all">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span class="hidden sm:inline">Grid</span>
+                </button>
+                <button id="viewListBtn" class="px-3 py-1.5 rounded-md text-xs font-semibold text-slate-500 dark:text-zinc-400 flex items-center gap-1 transition-all">
+                    <i class="fa-solid fa-list"></i>
+                    <span class="hidden sm:inline">List</span>
+                </button>
+            </div>
+
+            <!-- Instant Search Input -->
+            <div class="relative flex-grow max-w-xs">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="searchInput" placeholder="Search platforms..." 
+                    class="w-full pl-8 pr-3 py-1.5 bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-ig-borderDark rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all placeholder:text-slate-400">
+            </div>
+        </div>
+
+        <!-- Instagram Link Cards Section -->
+        <div id="linksContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Cards appended here via JS -->
+        </div>
+
+        <!-- Empty Search Result State -->
+        <div id="emptyState" class="hidden text-center py-12 border border-dashed border-slate-300 dark:border-zinc-800 rounded-2xl">
+            <i class="fa-solid fa-compass text-3xl text-slate-400 mb-2"></i>
+            <p class="text-sm font-semibold text-slate-700 dark:text-zinc-300">No platforms found</p>
+            <p class="text-xs text-slate-500 dark:text-zinc-500 mt-1">Try typing a different keyword or select another highlight tag.</p>
+        </div>
+
+    </main>
+
+    <!-- Share Profile Modal (Instagram Direct Style) -->
+    <div id="shareModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white dark:bg-zinc-900 rounded-2xl max-w-sm w-full p-6 relative border border-slate-200 dark:border-zinc-800 shadow-2xl transform scale-95 transition-transform duration-300" id="shareModalCard">
+            <!-- Close Button -->
+            <button id="closeShareModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Share Profile QR Code</h3>
+                <p class="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">Scan to open @prathamdadaa links on mobile</p>
+
+                <!-- QR Code Box -->
+                <div class="my-5 p-4 bg-white rounded-xl inline-block border border-slate-200 shadow-sm" id="qrcode"></div>
+
+                <div class="space-y-2">
+                    <button onclick="copyToClipboard('https://instagram.com/prathamdadaa/', 'Profile Link')" class="w-full py-2 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white font-semibold text-xs rounded-xl hover:opacity-95 transition-opacity flex items-center justify-center gap-2">
+                        <i class="fa-regular fa-copy"></i> Copy Direct Profile Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-20 opacity-0 pointer-events-none transition-all duration-300 ease-out z-50 flex items-center gap-2 bg-slate-900/90 text-white dark:bg-white/95 dark:text-slate-900 px-4 py-2.5 rounded-full shadow-lg border border-slate-800 text-xs font-semibold">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-600 text-sm"></i>
+        <span id="toastMessage">Link copied to clipboard!</span>
+    </div>
+
+    <script>
+        // Profile Platforms Data
+        const linksData = [
+            {
+                id: 'linkedin',
+                title: 'LinkedIn',
+                handle: '@prathamdadaa',
+                category: 'tech',
+                url: 'https://linkedin.com/in/@prathamdadaa',
+                color: '#0077B5',
+                badgeImg: 'https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white',
+                icon: 'fa-brands fa-linkedin',
+                desc: 'Professional network, experience & career insights.',
+                likes: 128
+            },
+            {
+                id: 'twitter',
+                title: 'Twitter / X',
+                handle: '@prathamdada1',
+                category: 'social',
+                url: 'https://twitter.com/@prathamdada1',
+                color: '#1DA1F2',
+                badgeImg: 'https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=x&logoColor=white',
+                icon: 'fa-brands fa-x-twitter',
+                desc: 'Daily thoughts, tech discussions & project snippets.',
+                likes: 94
+            },
+            {
+                id: 'devto',
+                title: 'DEV.to',
+                handle: '@prathamdadaa',
+                category: 'writing',
+                url: 'https://dev.to/@prathamdadaa',
+                color: '#0A0A0A',
+                badgeImg: 'https://img.shields.io/badge/dev.to-0A0A0A?style=for-the-badge&logo=devto&logoColor=white',
+                icon: 'fa-brands fa-dev',
+                desc: 'Technical articles, guides & developer tutorials.',
+                likes: 210
+            },
+            {
+                id: 'hashnode',
+                title: 'Hashnode',
+                handle: '@prathamdadaa',
+                category: 'writing',
+                url: 'https://hashnode.com/@prathamdadaa',
+                color: '#2962FF',
+                badgeImg: 'https://img.shields.io/badge/Hashnode-2962FF?style=for-the-badge&logo=hashnode&logoColor=white',
+                icon: 'fa-brands fa-hashnode',
+                desc: 'Software development blogs & tech breakdowns.',
+                likes: 165
+            },
+            {
+                id: 'medium',
+                title: 'Medium',
+                handle: '@prathamdadaa',
+                category: 'writing',
+                url: 'https://medium.com/@prathamdadaa',
+                color: '#12100E',
+                badgeImg: 'https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white',
+                icon: 'fa-brands fa-medium',
+                desc: 'Long-form stories, technical essays & opinions.',
+                likes: 112
+            },
+            {
+                id: 'stackoverflow',
+                title: 'Stack Overflow',
+                handle: '32971348',
+                category: 'tech',
+                url: 'https://stackoverflow.com/users/32971348',
+                color: '#FE7A16',
+                badgeImg: 'https://img.shields.io/badge/Stack_Overflow-FE7A16?style=for-the-badge&logo=stack-overflow&logoColor=white',
+                icon: 'fa-brands fa-stack-overflow',
+                desc: 'Community answers & software troubleshooting.',
+                likes: 310
+            },
+            {
+                id: 'hackerrank',
+                title: 'HackerRank',
+                handle: 'prathamdadaa',
+                category: 'tech',
+                url: 'https://www.hackerrank.com/prathamdadaa',
+                color: '#2EC866',
+                badgeImg: 'https://img.shields.io/badge/HackerRank-2EC866?style=for-the-badge&logo=hackerrank&logoColor=white',
+                icon: 'fa-brands fa-hackerrank',
+                desc: 'Data structures & problem-solving challenges.',
+                likes: 240
+            },
+            {
+                id: 'instagram',
+                title: 'Instagram',
+                handle: '@prathamdadaa',
+                category: 'social',
+                url: 'https://instagram.com/prathamdadaa/',
+                color: '#E4405F',
+                badgeImg: 'https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white',
+                icon: 'fa-brands fa-instagram',
+                desc: 'Personal photos, stories & life highlights.',
+                likes: 520
+            }
+        ];
+
+        // App States
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let currentView = 'grid'; // 'grid' or 'list'
+        let qrcodeObj = null;
+
+        // DOM elements
+        const linksContainer = document.getElementById('linksContainer');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+        const highlightBtns = document.querySelectorAll('.highlight-btn');
+        const viewGridBtn = document.getElementById('viewGridBtn');
+        const viewListBtn = document.getElementById('viewListBtn');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const toast = document.getElementById('toast');
+        const shareModal = document.getElementById('shareModal');
+        const shareModalCard = document.getElementById('shareModalCard');
+        const openShareModalBtn = document.getElementById('openShareModalBtn');
+        const closeShareModalBtn = document.getElementById('closeShareModalBtn');
+        const topShareBtn = document.getElementById('topShareBtn');
+
+        // Render Cards (Grid vs List Layout)
+        function renderLinks() {
+            linksContainer.innerHTML = '';
+
+            const filtered = linksData.filter(link => {
+                const matchesCategory = currentCategory === 'all' || link.category === currentCategory;
+                const matchesSearch = link.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                     link.handle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                     link.desc.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            document.getElementById('statLinksCount').textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                linksContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            linksContainer.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            if (currentView === 'grid') {
+                linksContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4";
+            } else {
+                linksContainer.className = "flex flex-col gap-3";
+            }
+
+            filtered.forEach(link => {
+                const card = document.createElement('div');
+                card.className = `bg-white dark:bg-ig-cardDark border border-slate-200 dark:border-ig-borderDark rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-lg relative group flex ${currentView === 'list' ? 'flex-row items-center p-3 justify-between' : 'flex-col'}`;
+
+                if (currentView === 'grid') {
+                    // Instagram Card Header & Banner
+                    card.innerHTML = `
+                        <!-- Card Header -->
+                        <div class="p-3 flex items-center justify-between border-b border-slate-100 dark:border-zinc-900">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold" style="background-color: ${link.color}">
+                                    <i class="${link.icon}"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs font-bold text-slate-900 dark:text-white leading-tight">${link.title}</h3>
+                                    <p class="text-[10px] text-slate-500 dark:text-zinc-400">${link.handle}</p>
+                                </div>
+                            </div>
+                            <button onclick="copyToClipboard('${link.url}', '${link.title}')" class="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1">
+                                <i class="fa-regular fa-bookmark text-sm"></i>
+                            </button>
+                        </div>
+
+                        <!-- Card Shield Badge Display Body -->
+                        <div class="p-4 bg-slate-50 dark:bg-zinc-950/50 flex flex-col items-center justify-center min-h-[100px] gap-2 text-center relative cursor-pointer group" onclick="triggerHeartAnimation(event, '${link.id}')">
+                            <img src="${link.badgeImg}" alt="${link.title} Badge" class="h-8 object-contain shadow-sm rounded transition-transform group-hover:scale-105" />
+                            <p class="text-[11px] text-slate-600 dark:text-zinc-400 max-w-xs line-clamp-2 px-2 mt-1">${link.desc}</p>
+                        </div>
+
+                        <!-- Card Footer Action Bar -->
+                        <div class="p-3 border-t border-slate-100 dark:border-zinc-900 flex items-center justify-between mt-auto">
+                            <div class="flex items-center gap-3">
+                                <!-- Like Heart Button -->
+                                <button onclick="likePlatform('${link.id}', this)" class="flex items-center gap-1.5 text-xs text-slate-600 dark:text-zinc-300 hover:text-rose-500 transition-colors">
+                                    <i class="fa-regular fa-heart text-base heart-icon"></i>
+                                    <span class="font-semibold like-count">${link.likes}</span>
+                                </button>
+                                <!-- Share / Copy Icon -->
+                                <button onclick="copyToClipboard('${link.url}', '${link.title}')" class="text-xs text-slate-600 dark:text-zinc-300 hover:text-blue-500">
+                                    <i class="fa-regular fa-paper-plane text-sm"></i>
+                                </button>
+                            </div>
+
+                            <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1 transition-all">
+                                <span>Open</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    // Instagram List View Card
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold flex-shrink-0" style="background-color: ${link.color}">
+                                <i class="${link.icon}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h3 class="text-xs font-bold text-slate-900 dark:text-white truncate">${link.title}</h3>
+                                <p class="text-[11px] text-slate-500 dark:text-zinc-400 truncate">${link.handle}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button onclick="likePlatform('${link.id}', this)" class="px-2.5 py-1.5 rounded-lg text-xs text-slate-600 dark:text-zinc-300 hover:text-rose-500 transition-colors flex items-center gap-1">
+                                <i class="fa-regular fa-heart text-sm"></i>
+                                <span class="font-semibold text-[11px]">${link.likes}</span>
+                            </button>
+                            <button onclick="copyToClipboard('${link.url}', '${link.title}')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 text-xs hover:bg-slate-200">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                            <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs">
+                                Visit
+                            </a>
+                        </div>
+                    `;
+                }
+
+                linksContainer.appendChild(card);
+            });
+        }
+
+        // Like Button Particle Animation
+        function likePlatform(id, btnElement) {
+            const linkObj = linksData.find(l => l.id === id);
+            if (!linkObj) return;
+
+            linkObj.likes += 1;
+            const countSpan = btnElement.querySelector('.like-count') || btnElement.querySelector('span');
+            if (countSpan) countSpan.textContent = linkObj.likes;
+
+            const heartIcon = btnElement.querySelector('i');
+            if (heartIcon) {
+                heartIcon.className = 'fa-solid fa-heart text-rose-500 text-base scale-125 transition-transform';
+                setTimeout(() => heartIcon.classList.remove('scale-125'), 200);
+            }
+        }
+
+        // Double Tap Floating Heart Effect
+        function triggerHeartAnimation(e, id) {
+            const heart = document.createElement('i');
+            heart.className = 'fa-solid fa-heart floating-heart text-2xl';
+            
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+
+            e.currentTarget.appendChild(heart);
+
+            const linkObj = linksData.find(l => l.id === id);
+            if (linkObj) {
+                linkObj.likes += 1;
+                renderLinks();
+            }
+
+            setTimeout(() => {
+                heart.remove();
+            }, 800);
+        }
+
+        // Copy Link to Clipboard
+        function copyToClipboard(text, name) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast(`Copied ${name} link!`);
+            } catch (err) {
+                showToast('Error copying link');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Toast Notification
+        let toastTimeout;
+        function showToast(msg) {
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        // Highlight Story Buttons Filtering
+        highlightBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                highlightBtns.forEach(b => {
+                    const outerRing = b.querySelector('.p-0\\.5');
+                    outerRing.className = 'p-0.5 rounded-full border-2 border-transparent hover:border-slate-300 dark:hover:border-zinc-700 group-hover:scale-105 transition-transform';
+                    const text = b.querySelector('span');
+                    text.className = 'text-[11px] font-medium text-slate-500 dark:text-zinc-400';
+                });
+
+                const activeRing = btn.querySelector('.p-0\\.5');
+                activeRing.className = 'p-0.5 rounded-full border-2 border-pink-500 group-hover:scale-105 transition-transform';
+                const activeText = btn.querySelector('span');
+                activeText.className = 'text-[11px] font-bold text-slate-900 dark:text-white';
+
+                currentCategory = btn.getAttribute('data-category');
+                renderLinks();
+            });
+        });
+
+        // Search Input
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderLinks();
+        });
+
+        // View Mode Switcher
+        viewGridBtn.addEventListener('click', () => {
+            currentView = 'grid';
+            viewGridBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm flex items-center gap-1 transition-all";
+            viewListBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold text-slate-500 dark:text-zinc-400 flex items-center gap-1 transition-all";
+            renderLinks();
+        });
+
+        viewListBtn.addEventListener('click', () => {
+            currentView = 'list';
+            viewListBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm flex items-center gap-1 transition-all";
+            viewGridBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold text-slate-500 dark:text-zinc-400 flex items-center gap-1 transition-all";
+            renderLinks();
+        });
+
+        // Modal QR Code Generation & Display
+        function openModal() {
+            shareModal.classList.remove('opacity-0', 'pointer-events-none');
+            shareModalCard.classList.remove('scale-95');
+            shareModalCard.classList.add('scale-100');
+
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            qrcodeObj = new QRCode(qrContainer, {
+                text: 'https://instagram.com/prathamdadaa/',
+                width: 140,
+                height: 140,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function closeModal() {
+            shareModal.classList.add('opacity-0', 'pointer-events-none');
+            shareModalCard.classList.remove('scale-100');
+            shareModalCard.classList.add('scale-95');
+        }
+
+        openShareModalBtn.addEventListener('click', openModal);
+        topShareBtn.addEventListener('click', openModal);
+        closeShareModalBtn.addEventListener('click', closeModal);
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) closeModal();
+        });
+
+        // Dark/Light Mode Switcher
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            themeIcon.className = isDark ? 'fa-solid fa-sun text-lg text-amber-400' : 'fa-solid fa-moon text-lg text-slate-700';
+            localStorage.setItem('ig_theme', isDark ? 'dark' : 'light');
+        });
+
+        // Initialize Theme from Local Storage
+        const savedTheme = localStorage.getItem('ig_theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+            themeIcon.className = 'fa-solid fa-moon text-lg text-slate-700';
+        } else {
+            document.documentElement.classList.add('dark');
+            themeIcon.className = 'fa-solid fa-sun text-lg text-amber-400';
+        }
+
+        // Window Load Initialization
+        window.onload = function() {
+            renderLinks();
+        };
+    </script>
+</body>
+</html>
